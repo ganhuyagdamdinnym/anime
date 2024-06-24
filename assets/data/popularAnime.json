@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Naruto",
+    "madeDate": 1999,
+    "episode": 220,
+    "img": "naruto.png",
+    "category": "for you",
+    "backImage": "narutoBack.png"
+  },
+  {
+    "name": "Bleach",
+    "madeDate": 2001,
+    "episode": 366,
+    "category": "popular",
+    "img": "bleach.png",
+    "backImage": "bleachBack.png"
+  },
+  {
+    "name": "One Piece",
+    "madeDate": 1999,
+    "episode": 1000,
+    "img": "one-piece.png",
+    "category": "for you",
+    "backImage": "onePieceBack.png"
+  },
+  {
+    "name": "Hunter x Hunter",
+    "madeDate": 1999,
+    "episode": 500,
+    "img": "hunter.png",
+    "category": "for you",
+    "backImage": "narutoBack.png"
+  },
+  {
+    "name": "Demon Slayer",
+    "madeDate": 2019,
+    "episode": 100,
+    "img": "demonslayer.png",
+    "category": "popular",
+    "backImage": "narutoBack.png"
+  }
+]
