@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
   },
   popularAnime: {
     width: "100%",
-    height: 270,
+    height: 280,
     gap: 15,
   },
   popularText: {
@@ -62,6 +62,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     height: 220,
+
     rowGap: 20,
   },
   popularAnimeParents: {

@@ -3,10 +3,10 @@ import { View, Text, Image } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { styles } from "@/assets/styles/backScreenStyle";
 import popularAnimeData from "@/assets/data/popularAnime.json";
-
+import { LinearGradient } from "expo-linear-gradient";
 type RootStackParamList = {
   ImageDetailScreen: {
-    name: string;
+    id: string;
   };
 };
 
@@ -23,20 +23,35 @@ type AnimeDataType = {
   category: string;
   backImage: string;
 };
-
+type TrendingAnimeData = {
+  data: {
+    id: string;
+    type: string;
+    attributes: {
+      canonicalTitle: string;
+      startDate: string;
+      episodeCount?: number;
+      posterImage?: {
+        medium: string;
+      };
+    };
+  }[];
+};
 const ImageDetailScreen = () => {
   const route = useRoute<ImageDetailScreenRouteProp>();
-  const { name } = route.params;
+  const { id } = route.params;
   const [data, setData] = useState<AnimeDataType | null>(null);
-
+  const [trendingAnime, setTrendingAnime] = useState<TrendingAnimeData["data"]>(
+    []
+  );
   const handleAnimeData = () => {
-    const AnimeData = popularAnimeData.filter((e) => e.name === name);
-    if (AnimeData.length > 0) {
-      setData(AnimeData[0]);
-    }
-    console.log(AnimeData, "skkkj");
+    fetch("https://kitsu.io/api/edge/trending/anime")
+      .then((res) => res.json())
+      .then((data) => setTrendingAnime(data.data))
+      .catch((error) => console.log(error));
+    console.log(trendingAnime, "sss");
   };
-
+  console.log(trendingAnime, "lll");
   useEffect(() => {
     handleAnimeData();
   }, []);
@@ -51,10 +66,18 @@ const ImageDetailScreen = () => {
               uri: `/assets/?unstable_path=.%2Fassets%2Fimages/${data.backImage}`,
             }}
           />
-          <Text style={styles.text}>Name: {data.name}</Text>
-          <Text style={styles.text}>Made Date: {data.madeDate}</Text>
-          <Text style={styles.text}>Episodes: {data.episode}</Text>
-          <Text style={styles.text}>Category: {data.category}</Text>
+          <LinearGradient
+            colors={["#040B1C", "transparent"]}
+            style={styles.fixedElement}
+          ></LinearGradient>
+          {/* <View style={styles.fixedElement}></View> */}
+          <View style={styles.textHeader}>
+            <Text>
+              <Text></Text>
+              <Text></Text>
+            </Text>
+            <View></View>
+          </View>
         </>
       ) : (
         <Text style={styles.text}>Loading...</Text>
