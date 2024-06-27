@@ -4,12 +4,13 @@ export const styles = StyleSheet.create({
   bodyContainer: {
     height: "100%",
     width: "100%",
-    paddingTop: 30,
-    paddingLeft: 20,
+    paddingTop: 10,
+    paddingLeft: 10,
     paddingRight: 20,
     backgroundColor: "#040B1C",
+    marginTop: 25,
     // backgroundColor: "red",
-    gap: 20,
+    gap: 15,
   },
   titleContainer: {
     color: "white",
@@ -19,7 +20,6 @@ export const styles = StyleSheet.create({
     fontWeight: "900",
   },
   parentsSearchAndTitle: {
-    // flex: 2,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -37,11 +37,21 @@ export const styles = StyleSheet.create({
     backgroundColor: "#E45959",
     width: 78,
     height: 24,
-    justifyContent: "center",
+    // justifyContent: "center",
     textAlign: "center",
     textAlignVertical: "center",
     borderRadius: 13,
     color: "white",
+  },
+  clickCat: {
+    backgroundColor: "white",
+    width: 78,
+    height: 24,
+    justifyContent: "center",
+    textAlign: "center",
+    textAlignVertical: "center",
+    borderRadius: 13,
+    color: "#E45959",
   },
   popularAnime: {
     width: "100%",
@@ -61,9 +71,9 @@ export const styles = StyleSheet.create({
   popularAnimeMap: {
     flexDirection: "row",
     width: "100%",
-    height: 220,
-
+    height: 230,
     rowGap: 20,
+    // backgroundColor: "red",
   },
   popularAnimeParents: {
     width: 124,
@@ -87,7 +97,7 @@ export const styles = StyleSheet.create({
   },
   forYouAnime: {
     width: "100%",
-    height: 270,
+    height: 280,
     gap: 15,
     // backgroundColor: "red",
   },

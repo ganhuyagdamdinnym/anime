@@ -1,16 +1,13 @@
-import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../screens/HomeScreen";
-// import ImageDetailScreen from "../screens/DetailsScreen";
+import LoginScreen from "../screens/LoginScreen";
 import { ScrollView } from "react-native";
+
+import TabTwoScreen from "./search";
+
 const Stack = createStackNavigator();
 const App = () => {
-  //: () => Node
-  //{ navigation }: { navigation: any }
-
-  // return <HomeScreen navigation={undefined} />;
   return (
     <Stack.Navigator initialRouteName="HomeScreen">
       <Stack.Screen
@@ -18,11 +15,16 @@ const App = () => {
         component={HomeScreen}
         options={{ headerShown: false }}
       />
-      {/* <Stack.Screen
-        name="ImageDetailScreen"
-        component={ImageDetailScreen}
+      <Stack.Screen
+        name="TabTwoScreen"
+        component={TabTwoScreen}
         options={{ headerShown: false }}
-      /> */}
+      />
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

@@ -1,9 +1,19 @@
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, ActivityIndicator } from "react-native";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+  Pressable,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Triangle } from "../components/triangle";
+import Video, { VideoRef, OnBufferData } from "react-native-video";
+import YoutubePlayer from "react-native-youtube-iframe";
+// import { OnBufferData } from "react-native-video";
 type TrendingAnimeData = {
   data: {
     id: string;
@@ -13,6 +23,7 @@ type TrendingAnimeData = {
       startDate: string;
       episodeCount?: number;
       description?: string;
+      youtubeVideoId: string;
       posterImage?: {
         original: string;
       };
@@ -24,13 +35,18 @@ type TrendingAnimeData = {
 };
 
 const DetailsScreen = () => {
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef<VideoRef>(null);
+  // const background = require("./background.mp4");
   const { id } = useLocalSearchParams();
   const [animeDetails, setAnimeDetails] = useState<
     TrendingAnimeData["data"][0] | null
   >(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
+  const [date, setDate] = useState<String>("");
+  const [isClickYoutubeButton, setIsClickYoutubeButton] =
+    useState<boolean>(false);
   useEffect(() => {
     const fetchAnimeDetails = async () => {
       try {
@@ -49,9 +65,12 @@ const DetailsScreen = () => {
         setLoading(false);
       }
     };
-
     fetchAnimeDetails();
   }, [id]);
+  const handleVideo = () => {
+    setIsClickYoutubeButton(!isClickYoutubeButton);
+    setPlaying(!playing);
+  };
 
   if (loading) {
     return (
@@ -76,28 +95,40 @@ const DetailsScreen = () => {
       </View>
     );
   }
+  // const onStateChange = useCallback((state) => {
+  //   if (state === "ended") {
+  //     setPlaying(false);
+  //   }
+  // }, []);
 
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.posterImage}
-        source={{ uri: animeDetails.attributes.posterImage?.original }}
-        resizeMode="cover"
-      />
+      {isClickYoutubeButton ? (
+        <YoutubePlayer
+          height={750}
+          width={400}
+          play={playing}
+          videoId={animeDetails?.attributes?.youtubeVideoId}
+          onChangeState={(state) => {
+            console.log(state);
+            if (state === "ended") {
+              setPlaying(false);
+            }
+          }}
+        />
+      ) : (
+        <Image
+          style={styles.posterImage}
+          source={{ uri: animeDetails.attributes.posterImage?.original }}
+          resizeMode="cover"
+        />
+      )}
+
       <LinearGradient
-        colors={[
-          "transparent",
-          "#040B1C",
-          "#040B1C",
-          "#040B1C",
-          "#040B1C",
-          "#040B1C",
-          "#040B1C",
-          "#040B1C",
-        ]}
+        colors={["transparent", "#040B1C", "#040B1C", "#040B1C"]}
         style={styles.textContainer}
       >
-        <View style={{ width: 320, height: 73 }}>
+        <View style={{ width: 320, height: 85 }}>
           <Text style={styles.title}>
             {animeDetails.attributes.canonicalTitle}
           </Text>
@@ -110,9 +141,9 @@ const DetailsScreen = () => {
           <Text style={{ color: "white", fontWeight: "500", fontSize: 10 }}>
             {animeDetails.attributes.description}
           </Text>
-          <View style={styles.playButton}>
+          <Pressable onPress={() => handleVideo()} style={styles.playButton}>
             <Triangle />
-          </View>
+          </Pressable>
         </View>
       </LinearGradient>
     </View>
@@ -124,7 +155,7 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "90deg" }],
   },
   container: {
-    flex: 1,
+    flexDirection: "column",
     alignItems: "center",
 
     //backgroundColor: "#040B1C",
@@ -140,8 +171,9 @@ const styles = StyleSheet.create({
   },
   posterImage: {
     width: 400,
-    height: 450,
-    marginBottom: 20,
+    height: 750,
+    // marginBottom: 20,
+    //position: "absolute",
   },
   textContainer: {
     alignItems: "center",
@@ -172,7 +204,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    right: 0,
+    right: -20,
+    top: -20,
     borderRadius: 100,
   },
   triangle: {

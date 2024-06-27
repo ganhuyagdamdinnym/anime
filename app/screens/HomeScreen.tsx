@@ -1,13 +1,12 @@
 import { MovieArray } from "@/assets/data/arrays";
-import popularAnimeData from "@/assets/data/popularAnime.json";
-import imageMap from "@/assets/images/imageMap";
 import { styles } from "@/assets/styles/homeStyle";
-import { useNavigation } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import React from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
+import { router } from "expo-router";
+import { AsyncStorage } from "react-native";
 
 type TrendingAnimeData = {
   data: {
@@ -21,7 +20,7 @@ type TrendingAnimeData = {
         medium: string;
       };
       coverImage?: {
-        tiny: string;
+        original: string;
       };
     };
   }[];
@@ -32,6 +31,22 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
     []
   );
   const [error, setError] = useState(null);
+  const [clickCat, setClickCat] = useState<String>("");
+
+  const handleCategory = (catName: string) => {
+    setClickCat(catName);
+    fetch(`https://kitsu.io/api/edge/anime?filter[categories]=${catName}`)
+      .then((res) => res.json())
+      .then((data) => setTrendingAnime(data.data))
+      .catch((error) => setError(error));
+    // alert(catName);
+  };
+  useEffect(() => {
+    const token = AsyncStorage.getItem("token");
+    if (!token) {
+      router.replace("/login");
+    }
+  }, []);
 
   useEffect(() => {
     fetch("https://kitsu.io/api/edge/trending/anime")
@@ -43,21 +58,36 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
     <View style={styles.bodyContainer}>
       <View style={styles.parentsSearchAndTitle}>
         <Text style={styles.titleContainer}>Choose genre</Text>
-
-        <Ionicons size={30} color={"white"} name="search" />
       </View>
       <View style={styles.cateParents}>
-        {MovieArray.map((item, index) => (
-          <Text key={index} style={styles.category}>
-            {item.cate}
-          </Text>
-        ))}
+        {MovieArray.map((item, index) => {
+          if (item.cate == clickCat) {
+            return (
+              <Text
+                key={index}
+                style={styles.clickCat}
+                onPress={() => handleCategory(item.cate)}
+              >
+                {item.cate}
+              </Text>
+            );
+          }
+          return (
+            <Text
+              key={index}
+              style={styles.category}
+              onPress={() => handleCategory(item.cate)}
+            >
+              {item.cate}
+            </Text>
+          );
+        })}
       </View>
       <View style={styles.popularAnime}>
-        <Text style={styles.popularText}>Popular</Text>
+        <Text style={styles.popularText}>Trending</Text>
         <ScrollView style={styles.popularAnimeMap} horizontal={true}>
           {trendingAnime.map((item, index) => {
-            const imageUrl = item?.attributes?.coverImage?.tiny;
+            const imageUrl = item?.attributes?.coverImage?.original;
             return (
               <Link
                 href={`animes/${item.id}`}
@@ -95,7 +125,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
         <Text style={styles.popularText}>For you</Text>
         <ScrollView style={styles.popularAnimeMap} horizontal={true}>
           {trendingAnime.map((item, index) => {
-            const imageUrl = item?.attributes?.coverImage?.tiny;
+            const imageUrl = item?.attributes?.coverImage?.original;
             return (
               <Link
                 href={`animes/${item.id}`}
@@ -134,20 +164,3 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
 };
 
 export default HomeScreen;
-
-// const HomeStack = createNativeStackNavigator();
-
-// export default function HomeStackScreen() {
-//   return (
-//     <HomeStack.Navigator
-//     // screenOptions={{
-//     //   headerShown: false,
-//     // }}
-//     >
-//       <HomeStack.Screen name="Home" component={HomeScreen} />
-//       <HomeStack.Screen name="Details" component={ImageDetailScreen} />
-//     </HomeStack.Navigator>
-//   );
-// }
-
-// const Tab = createBottomTabNavigator();
